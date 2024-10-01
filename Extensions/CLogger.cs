@@ -25,10 +25,10 @@ public static class CLogger
     // Initialize the logger with configuration
     public static void Initialize(IConfiguration configuration)
     {
-        var loggingConfig = configuration.GetSection("Logging");
-        _logDirectory = loggingConfig["LogDirectory"] ?? "Logs";
-        _logFilePrefix = loggingConfig["LogFilePrefix"] ?? "yyyyMMdd-";
-        _logFileName = loggingConfig["LogFileName"] ?? "wsuscommander.log";
+        var loggingConfig = configuration.GetSection("CLogger");
+        _logDirectory = loggingConfig["Directory"] ?? "Logs";
+        _logFilePrefix = loggingConfig["FilePrefix"] ?? "yyyyMMdd-";
+        _logFileName = loggingConfig["FileName"] ?? "wsuscommander.log";
 
         // Parse minimum log level
         if (!Enum.TryParse(loggingConfig["LogLevel"], true, out _minLogLevel))
