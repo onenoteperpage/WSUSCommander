@@ -8,4 +8,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
 </Project>
