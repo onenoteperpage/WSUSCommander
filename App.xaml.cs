@@ -46,6 +46,23 @@ public partial class App : Application
         }
 
         base.OnStartup(e);
+
+        // Store arguments in dictionary
+        Dictionary<string, string> arguments = new Dictionary<string, string>();
+
+        // Get cmdline arguments
+        string[] args = Environment.GetCommandLineArgs();
+        for (int index = 1; index < args.Length; index += 2)
+        {
+            string arg = args[index].Replace("--", "");
+            if (index + 1 < args.Length)
+            {
+                arguments.Add(arg, args[index + 1]);
+            }
+        }
+
+        // Store the arguments globally
+        Application.Current.Properties["Arguments"] = arguments;
     }
 
     protected override void OnExit(ExitEventArgs e)

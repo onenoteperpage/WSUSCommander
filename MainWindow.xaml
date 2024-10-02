@@ -3,10 +3,106 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WSUSCommander"
+        xmlns:local="clr-namespace:WSUSCommander" 
+        xmlns:local1="clr-namespace:WSUSCommander.Extensions.GUI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
 
-    </Grid>
+    <Window.Resources>
+        <!-- Define the BoolToAdminColorConverter -->
+        <local1:BoolToAdminColorConverter x:Key="BoolToAdminColorConverter" />
+        <!-- Define the BoolToAdminTextConverter -->
+        <local1:BoolToAdminTextConverter x:Key="BoolToAdminTextConverter" />
+    </Window.Resources>
+
+    <StackPanel>
+        <!-- Title and Admin Status -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Title in the Center -->
+            <TextBlock Grid.Column="0"
+                       x:Name="txt_TitleText"
+                       Text="WSUS Commander"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="0,10,0,10" />
+
+            <!-- Admin Status on the Right -->
+            <TextBlock Grid.Column="1" 
+                       Text="{Binding IsAdmin, Converter={StaticResource BoolToAdminTextConverter}}"
+                       Foreground="{Binding IsAdmin, Converter={StaticResource BoolToAdminColorConverter}}"
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Top" 
+                       Margin="0,10,10,10" 
+                       FontSize="16" />
+        </Grid>
+
+        <!-- Group Box for Server Groups -->
+        <GroupBox Header="Server Groups" Margin="10" Padding="10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="80">
+                <ItemsControl ItemsSource="{Binding ServerGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox Content="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
+
+        <!-- Group Box for Message to Logged On Users -->
+        <GroupBox Header="Logged On Users Message" Margin="10" Padding="10">
+            <!-- Editable TextBox for Custom Input -->
+            <TextBox Text="{Binding CustomText, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="10"
+                     TextWrapping="Wrap" 
+                     Height="50" />
+        </GroupBox>
+
+        
+
+        <!-- Log File Path Section -->
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Label for Log File Path -->
+            <TextBlock Text="Log File Path:" VerticalAlignment="Center" />
+
+            <!-- Read-Only TextBox for Log Path -->
+            <TextBox Grid.Column="1"
+                     Text="{Binding LogFilePath}" 
+                     IsReadOnly="True" 
+                     Margin="10,0,0,0"
+                     VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Buttons Section -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button x:Name="btn_ShowHelp"
+                    Content="Show Help"
+                    Width="100"
+                    Margin="6,0"
+                    Click="btn_ShowHelp_Click" />
+            <Button x:Name="btn_CloseApp"
+                    Content="Close"
+                    Width="100"
+                    Margin="6,0"
+                    Click="btn_CloseApp_Click" />
+            <Button x:Name="btn_ExecuteProcess"
+                    Content="Execute"
+                    Width="100"
+                    Margin="6,0"
+                    Click="btn_ExecuteProcess_Click" />
+        </StackPanel>
+
+    </StackPanel>
 </Window>
