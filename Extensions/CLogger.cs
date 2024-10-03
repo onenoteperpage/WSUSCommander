@@ -27,8 +27,8 @@ public static class CLogger
     {
         var loggingConfig = configuration.GetSection("CLogger");
         _logDirectory = loggingConfig["Directory"] ?? "Logs";
-        _logFilePrefix = loggingConfig["FilePrefix"] ?? "yyyyMMdd-";
-        _logFileName = loggingConfig["FileName"] ?? "wsuscommander.log";
+        _logFilePrefix = loggingConfig["FilePrefix"] ?? DateTime.Now.ToString("yyyyMMdd");
+        _logFileName = loggingConfig["FileName"] ?? "_wsuscommander.log";
 
         // Parse minimum log level
         if (!Enum.TryParse(loggingConfig["LogLevel"], true, out _minLogLevel))

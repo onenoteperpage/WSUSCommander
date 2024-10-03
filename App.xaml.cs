@@ -36,15 +36,6 @@ public partial class App : Application
 
             //CLogger.Info($"Loaded WSUS Settings: Setting1={setting1}, Setting2={setting2}");
 
-            // Generate the log file name
-            var logfilePrefix = DateTime.Now.ToString(Configuration["CLogger:FilePrefix"]);
-            var logfileSuffix = Configuration["CLogger:FileName"];
-            var logFileName = $"{logfilePrefix}-{logfileSuffix}";
-            var logFilePath = Path.Combine("Logs", logFileName);
-
-            // Store the log file name in app settings
-            Application.Current.Properties["LogFilePath"] = logFilePath;
-
             // Display settings in a message box
             //MessageBox.Show($"Setting1: {setting1}\nSetting2: {setting2}", "WSUS Settings");
         }
