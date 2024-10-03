@@ -18,7 +18,14 @@ namespace WSUSCommander.Extensions
                 // Get the SID for the local Administrators group
                 SecurityIdentifier adminGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
 
-                CLogger.Debug("User is a member of Administrators group on local machine.");
+                if (principal.IsInRole(adminGroupSid))
+                {
+                    CLogger.Debug("User is a member of Administrators group on local machine.");
+                }
+                else
+                {
+                    CLogger.Debug("User is NOT a member of Administrators group on local machine.");
+                }
 
                 // Check if the current user is in the Administrators group
                 return principal.IsInRole(adminGroupSid);
