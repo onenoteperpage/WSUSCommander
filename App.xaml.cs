@@ -31,10 +31,10 @@ public partial class App : Application
             CLogger.Info("Logger initialized");
 
             // Access settings
-            var setting1 = Configuration["WSUSSettings:Setting1"];
-            var setting2 = Configuration["WSUSSettings:Setting2"];
+            //var setting1 = Configuration["WSUSSettings:Setting1"];
+            //var setting2 = Configuration["WSUSSettings:Setting2"];
 
-            CLogger.Info($"Loaded WSUS Settings: Setting1={setting1}, Setting2={setting2}");
+            //CLogger.Info($"Loaded WSUS Settings: Setting1={setting1}, Setting2={setting2}");
 
             // Generate the log file name
             var logfilePrefix = DateTime.Now.ToString(Configuration["CLogger:FilePrefix"]);
@@ -85,7 +85,11 @@ public partial class App : Application
         CLogger.Debug("File 'servers.txt' found OK.");
         Dictionary<string, List<string>> serverGroups = FileParser.ReadServersTxtFile(filePath: "servers.txt");
         CLogger.Debug($"File 'servers.txt' loaded with {serverGroups.Count} server groups.");
+        Application.Current.Properties["ServerGroups"] = serverGroups;
 
+        // Store message to logged on users globally
+        Application.Current.Properties["LoggedOnUsersMessage"] = Configuration?["WSUSSettings:LoggedOnUsersMessage"] ?? "This machine will restart in the next 5 minutes for Windows Updates. Please save and close your work and log off.";
+        CLogger.Debug("Logged on users message loaded.");
     }
 
     protected override void OnExit(ExitEventArgs e)

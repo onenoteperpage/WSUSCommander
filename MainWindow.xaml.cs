@@ -21,15 +21,16 @@ public partial class MainWindow : Window
     public static bool IsAdmin { get; set; } = false;  // Static value for the admin group
     public string LogFilePath { get; set; } = Application.Current.Properties["LogFileName"]?.ToString() ?? System.IO.Path.Combine("Logs", $"{DateTime.Now.ToString("yyyyMMdd")}-appsettings-json-missing-wsuscommander.log");
     public List<string> ServerGroups { get; set; }
-    public string CustomText { get; set; } = "Default Text";
+    public string CustomText { get; set; } = Application.Current.Properties["LoggedOnUsersMessage"]?.ToString() ?? "Replace this text with a message to send any users that are logged on to target machines.";
 
     public MainWindow()
     {
         InitializeComponent();
 
-        ServerGroups = new List<string> { "Group 1", "Group 2", "Group 3" };
-        DataContext = this;  // Set the data context to this window for easy binding
+        // Check if the user is an admin using the UserCheck class
+        IsAdmin = UserCheck.IsUserAdministrator();
 
+        // execute command line arguments first, then exit?
         if (Application.Current.Properties.Contains("Arguments"))
         {
             if (Application.Current.Properties["Arguments"] is Dictionary<string, string> arguments)
@@ -40,6 +41,21 @@ public partial class MainWindow : Window
                 }
             }
         }
+
+        // Retrieve the dictionary of ServerGroups from Application.Current.Properties
+        if (Application.Current.Properties["ServerGroups"] is Dictionary<string, List<string>> serverGroups)
+        {
+            // Get the keys from the dictionary and assign them to the ServerGroups property
+            ServerGroups = serverGroups.Keys.ToList();
+        }
+        else
+        {
+            // Handle case where the ServerGroups key does not exist or is invalid
+            ServerGroups = new List<string>() { "The", "servers.txt", "file", "is", "missing" }; // Initialize empty list or handle accordingly
+        }
+
+        // Set the data context to this window for easy binding
+        DataContext = this;
 
         // log: app started
         CLogger.Info($"WSUS Commander started");
