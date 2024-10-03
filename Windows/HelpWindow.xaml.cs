@@ -87,7 +87,7 @@ namespace WSUSCommander.Windows
             paragraphC01.Inlines.Add(new Run("(either FQDN or DNS name)") { FontStyle = FontStyles.Italic });
             paragraphC01.Inlines.Add(new Run(" would follow with a single server name per line. Any blank lines are ignored. Each server block " +
                 "allows for specific servers to be targeted, and separated out.\n"));
-            paragraphC01.Inlines.Add(new Run("\tExample:\n"));
+            paragraphC01.Inlines.Add(new Run("\tExample:\n") { FontStyle = FontStyles.Italic });
             paragraphC01.Inlines.Add(new Run("\t\t[group1]\n" +
                 "\t\tserver01\n" +
                 "\t\tserver02\n" +
@@ -117,7 +117,7 @@ namespace WSUSCommander.Windows
             paragraphC02.Inlines.Add(new Run(" should exist in the same directory as the executable. This is the list of services that should " +
                 "be stopped on each machine before any processes are started. This will not discrinimate against services per machine, but all " +
                 "machines in each selected server group will be targeted.\n"));
-            paragraphC02.Inlines.Add(new Run("\tExample:\n"));
+            paragraphC02.Inlines.Add(new Run("\tExample:\n") { FontStyle = FontStyles.Italic });
             paragraphC02.Inlines.Add(new Run("\t\tservice1\n" +
                 "\t\tservice2\n" +
                 "\t\tservice3\n" +
@@ -144,36 +144,33 @@ namespace WSUSCommander.Windows
                 "application settings and configuration. Use the "));
             paragraphD01.Inlines.Add(new Run("README.html") { FontWeight = FontWeights.Bold });
             paragraphD01.Inlines.Add(new Run(" file to have a better understanding of all the configuration settings. The main sections " +
-                "are:\n"));
-            paragraphD01.Inlines.Add(new Run("WSUSSettings::BackupDir") { FontWeight = FontWeights.Bold });
-            paragraphD01.Inlines.Add(new Run(" - \n"));
-            paragraphD01.Inlines.Add(new Run("FileBackup::Name") { FontWeight = FontWeights.Bold });
-            paragraphD01.Inlines.Add(new Run(" - \n"));
-            paragraphD01.Inlines.Add(new Run("FileBackup::SourcePath") { FontWeight = FontWeights.Bold });
-            paragraphD01.Inlines.Add(new Run(" - \n"));
-            paragraphD01.Inlines.Add(new Run("FileBackup::BackupSubDir") { FontWeight = FontWeights.Bold });
-            paragraphD01.Inlines.Add(new Run(" - \n"));
+                "are:"));
+            document.Blocks.Add(paragraphD01);
 
-            var subHeading = new Paragraph(new Run("Sub-heading"))
-            {
-                FontSize = 16,
-                FontWeight = FontWeights.Bold,
-                Margin = new Thickness(0, 0, 0, 10)  // 10 pixels space below
-            };
-            document.Blocks.Add(subHeading);
-
-            // Add bullet points with controlled spacing
-            var bulletList = new List
+            var bulletListD01 = new List
             {
                 MarkerStyle = TextMarkerStyle.Disc,
-                Margin = new Thickness(0, 0, 0, 10)  // 10 pixels space below the list
+                Margin = new Thickness(0, 0, 0, 10)
             };
-            bulletList.ListItems.Add(new ListItem(new Paragraph(new Run("First bullet point"))));
-            bulletList.ListItems.Add(new ListItem(new Paragraph(new Run("Second bullet point"))));
-            document.Blocks.Add(bulletList);
+            bulletListD01.ListItems.Add(new ListItem(new Paragraph(new Run("WSUSSettings - main settings for WSUS Commander"))));
+            bulletListD01.ListItems.Add(new ListItem(new Paragraph(new Run("FileBackup - list of files to be backed up on each server"))));
+            bulletListD01.ListItems.Add(new ListItem(new Paragraph(new Run("DirectoryBackup - list of directories to be backed up on each server"))));
+            bulletListD01.ListItems.Add(new ListItem(new Paragraph(new Run("CLogger - log file settings"))));
+            document.Blocks.Add(bulletListD01);
+
+            var emptyParagraph = new Paragraph()
+            {
+                Margin = new Thickness(0, 0, 0, 10)
+            };
+            document.Blocks.Add(emptyParagraph);
 
             // Set the FlowDocument to the RichTextBox
             HelpRichTextBox.Document = document;
+        }
+
+        private void btn_CloseWindow_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using WSUSCommander.Extensions;
@@ -35,8 +36,17 @@ public partial class App : Application
 
             CLogger.Info($"Loaded WSUS Settings: Setting1={setting1}, Setting2={setting2}");
 
+            // Generate the log file name
+            var logfilePrefix = DateTime.Now.ToString(Configuration["CLogger:FilePrefix"]);
+            var logfileSuffix = Configuration["CLogger:FileName"];
+            var logFileName = $"{logfilePrefix}-{logfileSuffix}";
+            var logFilePath = Path.Combine("Logs", logFileName);
+
+            // Store the log file name in app settings
+            Application.Current.Properties["LogFilePath"] = logFilePath;
+
             // Display settings in a message box
-            MessageBox.Show($"Setting1: {setting1}\nSetting2: {setting2}", "WSUS Settings");
+            //MessageBox.Show($"Setting1: {setting1}\nSetting2: {setting2}", "WSUS Settings");
         }
         catch (Exception ex)
         {
@@ -63,6 +73,19 @@ public partial class App : Application
 
         // Store the arguments globally
         Application.Current.Properties["Arguments"] = arguments;
+
+        // Load servers.txt
+        if (!File.Exists("servers.txt"))
+        {
+            CLogger.Error($"Error during startup: File 'servers.txt' is not found.");
+            MessageBox.Show($"Error during startup: File 'servers.txt' is not found.", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown(); // Ensure the application shuts down if startup fails
+            return;
+        }
+        CLogger.Debug("File 'servers.txt' found OK.");
+        Dictionary<string, List<string>> serverGroups = FileParser.ReadServersTxtFile(filePath: "servers.txt");
+        CLogger.Debug($"File 'servers.txt' loaded with {serverGroups.Count} server groups.");
+
     }
 
     protected override void OnExit(ExitEventArgs e)

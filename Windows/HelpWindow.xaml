@@ -5,11 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WSUSCommander.Windows"
         mc:Ignorable="d"
-        Title="Help" Height="450" Width="800">
-    <Grid>
+        Title="Help" Height="480" Width="800">
+    <StackPanel>
         <RichTextBox x:Name="HelpRichTextBox"
                      IsReadOnly="True"
                      VerticalScrollBarVisibility="Auto"
-                     HorizontalScrollBarVisibility="Auto" />
-    </Grid>
+                     HorizontalScrollBarVisibility="Auto" 
+                     Height="400"/>
+        <!-- Optional height to give space for button -->
+        <Button x:Name="btn_CloseWindow"
+                Content="Close Help"
+                Click="btn_CloseWindow_Click"
+                HorizontalAlignment="Right"
+                Margin="10"
+                Padding="10,4"/>
+    </StackPanel>
 </Window>

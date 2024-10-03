@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WSUSCommander.Extensions;
 using WSUSCommander.Windows;
 
 namespace WSUSCommander;
@@ -18,7 +19,7 @@ namespace WSUSCommander;
 public partial class MainWindow : Window
 {
     public static bool IsAdmin { get; set; } = false;  // Static value for the admin group
-    public static string LogFilePath { get; set; } = @"C:\Logs\logfile.txt";
+    public string LogFilePath { get; set; } = Application.Current.Properties["LogFileName"]?.ToString() ?? System.IO.Path.Combine("Logs", $"{DateTime.Now.ToString("yyyyMMdd")}-appsettings-json-missing-wsuscommander.log");
     public List<string> ServerGroups { get; set; }
     public string CustomText { get; set; } = "Default Text";
 
@@ -39,6 +40,11 @@ public partial class MainWindow : Window
                 }
             }
         }
+
+        // log: app started
+        CLogger.Info($"WSUS Commander started");
+        
+
     }
 
     private async void StartAction_Click(object sender, RoutedEventArgs e)
