@@ -1,4 +1,5 @@
-﻿using System.Security.RightsManagement;
+﻿using System.Diagnostics;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -110,7 +111,7 @@ public partial class MainWindow : Window
         return;
     }
 
-    private void btn_ExecuteProcess_Click(object sender, RoutedEventArgs e)
+    private async void btn_ExecuteProcess_Click(object sender, RoutedEventArgs e)
     {
         List<string> listOfTargetServers = new();
 
@@ -153,11 +154,33 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Test connection to each server
-        foreach (var machine in listOfTargetServers)
+
+        // Ping each server
+        ProgressWindow progressWindow = new ProgressWindow();
+        progressWindow.SetWindowTitle("Pinging Servers");
+        progressWindow.Show();
+
+        for (int i = 0;  i < listOfTargetServers.Count; i++)
         {
-            SysCheck.IsMachineReachable(machine);
+            if (progressWindow.IsCancelled)
+            {
+                MessageBox.Show("Operation cancelled");
+                break;
+            }
+
+            // Test connection to each server
+            await SysCheck.IsMachineReachableAsync(listOfTargetServers[i]);
+
+            // Update progress (percentage)
+            double percentage = (double)i / listOfTargetServers.Count * 100;
+            progressWindow.UpdateProgress(percentage);
+
+            // Update iteration text
+            progressWindow.UpdateIterationText($"Processing {i} of {listOfTargetServers.Count}");
+
+            await Task.Delay(100);
         }
+        progressWindow.Close();
     }
 
 }
