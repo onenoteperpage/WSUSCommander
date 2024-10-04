@@ -49,7 +49,7 @@
                 <ItemsControl ItemsSource="{Binding ServerGroups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <CheckBox Content="{Binding}" />
+                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

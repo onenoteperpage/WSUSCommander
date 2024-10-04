@@ -14,6 +14,7 @@ namespace WSUSCommander.Extensions
                     PingReply reply = ping.Send(machineName, 3000); // Timeout of 3000 ms (3 seconds)
                     if (reply.Status == IPStatus.Success)
                     {
+                        CLogger.Info($"Pint to '{machineName}' successful.");
                         return true;
                     }
                 }

@@ -100,4 +100,12 @@ public static class CLogger
     {
         LogMessage(LogLevel.FATAL, message, ex);
     }
+
+    // Method to get the full log file path
+    public static string GetLogFilePath()
+    {
+        string datePrefix = DateTime.Now.ToString(_logFilePrefix);
+        string fullLogFilePath = Path.Combine(_logDirectory ?? "Logs", $"{datePrefix}{_logFileName}");
+        return fullLogFilePath;
+    }
 }
