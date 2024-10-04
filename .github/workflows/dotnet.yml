@@ -5,21 +5,67 @@ on:
     branches: [ "dev" ]
   pull_request:
     branches: [ "main" ]
+  # Trigger the workflow only when a tag is pushed
+  create:
+    tags:
+      - 'v*'  # Match version tags like v1.0.0
 
 jobs:
   build:
-
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Upload Build Artifacts
+      run: |
+        echo "Uploading files from the release directory"
+        mkdir -p release_artifacts
+        cp -R .\bin\Release\net8.0-windows\win-x64\publish\* release_artifacts/
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: "Release for ${{ github.ref }}"
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release_artifacts
+        asset_name: "WSUSCommander-${{ github.ref }}.zip"
+        asset_content_type: application/zip
